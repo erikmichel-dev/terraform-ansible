@@ -4,7 +4,7 @@ locals {
 
 data "aws_availability_zones" "available" {}
 
-resource "random_id" "this" {
+resource "random_id" "network" {
   byte_length = 2
 }
 
@@ -14,7 +14,7 @@ resource "aws_vpc" "this" {
   enable_dns_support   = true
 
   tags = {
-    Name = "terran_vpc-${random_id.this.dec}"
+    Name = "terran_vpc-${random_id.network.dec}"
   }
 
   lifecycle {
@@ -26,7 +26,7 @@ resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.this.id
 
   tags = {
-    Name = "terran_igw-${random_id.this.dec}"
+    Name = "terran_igw-${random_id.network.dec}"
   }
 }
 
@@ -87,13 +87,13 @@ resource "aws_security_group" "public" {
   description = "Security group for public instances"
   vpc_id      = aws_vpc.this.id
 }
-resource "aws_vpc_security_group_ingress_rule" "ingress_all" {
+resource "aws_vpc_security_group_ingress_rule" "ingress_local" {
   security_group_id = aws_security_group.public.id
-  cidr_ipv4 = var.access_ip
-  ip_protocol = -1
+  cidr_ipv4         = var.access_ip
+  ip_protocol       = -1
 }
 resource "aws_vpc_security_group_egress_rule" "egress_all" {
   security_group_id = aws_security_group.public.id
-  cidr_ipv4 = "0.0.0.0/0"
-  ip_protocol = -1
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = -1
 }
