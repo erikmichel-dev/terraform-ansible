@@ -6,11 +6,6 @@ variable "access_ip" {
   type = string
 }
 
-variable "main_ip" {
-  type    = string
-  default = "18.153.248.251/32"
-}
-
 variable "main_instance_type" {
   type    = string
   default = "t2.micro"
