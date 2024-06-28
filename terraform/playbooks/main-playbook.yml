@@ -70,7 +70,6 @@
     loop:
       - /home/ubuntu/prometheus-2.52.0.linux-amd64/prometheus
       - /home/ubuntu/prometheus-2.52.0.linux-amd64/promtool
-
   - name: Copy Files
     ansible.builtin.copy:
       src: "{{ item }}"
@@ -93,3 +92,26 @@
       enabled: true
       state: started
       
+  - name: Install Java for Jenkins requirements
+    ansible.builtin.apt:
+      name: default-jre
+      state: present
+  - name: Download apt key
+    ansible.builtin.apt_key:
+      url: https://pkg.jenkins.io/debian/jenkins.io-2023.key
+      state: present
+  - name: Add Jenkins repo to sources.list
+    ansible.builtin.apt_repository:
+      repo: deb https://pkg.jenkins.io/debian-stable binary/
+      filename: jenkins
+      state: present
+  - name: Update apt cache and install Jenkins
+    ansible.builtin.apt:
+      name: jenkins
+      state: present
+      update_cache: true
+  - name: Ensure Jenkins is started and enabled
+    ansible.builtin.systemd_service:
+      name: jenkins
+      enabled: true
+      state: started
