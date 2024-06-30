@@ -29,11 +29,11 @@
 
   - name: Download Prometheus
     ansible.builtin.get_url:
-      url: https://github.com/prometheus/prometheus/releases/download/v2.52.0/prometheus-2.52.0.linux-amd64.tar.gz
+      url: https://github.com/prometheus/prometheus/releases/download/v2.52.0/prometheus-2.52.0.linux-arm64.tar.gz
       dest: /home/ubuntu
   - name: Extract Prom Resources
     ansible.builtin.unarchive:
-      src: /home/ubuntu/prometheus-2.52.0.linux-amd64.tar.gz
+      src: /home/ubuntu/prometheus-2.52.0.linux-arm64.tar.gz
       dest: /home/ubuntu
       remote_src: yes
   - name: Create Prom Group
@@ -68,16 +68,16 @@
       group: prometheus
       mode: '0755'
     loop:
-      - /home/ubuntu/prometheus-2.52.0.linux-amd64/prometheus
-      - /home/ubuntu/prometheus-2.52.0.linux-amd64/promtool
+      - /home/ubuntu/prometheus-2.52.0.linux-arm64/prometheus
+      - /home/ubuntu/prometheus-2.52.0.linux-arm64/promtool
   - name: Copy Files
     ansible.builtin.copy:
       src: "{{ item }}"
       dest: /etc/prometheus
       remote_src: yes
     loop:
-      - /home/ubuntu/prometheus-2.52.0.linux-amd64/consoles
-      - /home/ubuntu/prometheus-2.52.0.linux-amd64/console_libraries
+      - /home/ubuntu/prometheus-2.52.0.linux-arm64/consoles
+      - /home/ubuntu/prometheus-2.52.0.linux-arm64/console_libraries
   - name: Create Config File
     ansible.builtin.template:
       src: prometheus.yml
@@ -92,10 +92,24 @@
       enabled: true
       state: started
       
-  - name: Install Java for Jenkins requirements
+  - name: Requirements Install Java
     ansible.builtin.apt:
       name: default-jre
       state: present
+  - name: Requirements Terraform, download apt key
+    ansible.builtin.apt_key:
+      url: https://apt.releases.hashicorp.com/gpg 
+      state: present
+  - name: Requirements Terraform, repo to sources.list
+    ansible.builtin.apt_repository:
+      repo: deb https://apt.releases.hashicorp.com {{ ansible_distribution_release  }} main
+      filename: terraform
+      state: present
+  - name: Requirements Terraform, install
+    ansible.builtin.apt:
+      name: terraform
+      state: present
+      update_cache: true
   - name: Download apt key
     ansible.builtin.apt_key:
       url: https://pkg.jenkins.io/debian/jenkins.io-2023.key

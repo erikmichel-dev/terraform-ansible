@@ -4,9 +4,18 @@
   become: yes
 
   tasks:
-  - name: Install java for requirements
+  - name: Requirements Install Java
     ansible.builtin.apt:
       name: default-jre
+      state: present
+  - name: Requirements Install Terraform, download apt key
+    ansible.builtin.apt_key:
+      url: https://apt.releases.hashicorp.com/gpg 
+      state: present
+  - name: Requirements Install Terraform, repo to sources.list
+    ansible.builtin.apt_repository:
+      repo: deb https://apt.releases.hashicorp.com main
+      filename: terraform
       state: present
   - name: Download apt key
     ansible.builtin.apt_key:
