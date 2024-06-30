@@ -8,7 +8,7 @@ variable "access_ip" {
 
 variable "main_instance_type" {
   type    = string
-  default = "t2.micro"
+  default = "t4g.small"
 }
 
 variable "main_vol_size" {
