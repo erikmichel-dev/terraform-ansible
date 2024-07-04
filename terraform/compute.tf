@@ -36,7 +36,7 @@ resource "aws_instance" "terran_main" {
   }
 
   provisioner "local-exec" {
-    command = "printf '\n${self.public_ip}' >> aws_hosts && aws ec2 wait instance-status-ok --instance-ids ${self.id} --region eu-central-1"
+    command = "printf '\n${self.public_ip}' >>  && aws ec2 wait instance-status-ok --instance-ids ${self.id} --region eu-central-1"
   }
 
   provisioner "local-exec" {
@@ -55,3 +55,12 @@ resource "null_resource" "grafana_install" {
 output "grafana_access" {
   value = {for i in aws_instance.terran_main[*] : i.tags.Name => "${i.public_ip}:3000"}
 }
+
+output "jenkins_access" {
+  value = {for i in aws_instance.terran_main[*] : i.tags.Name => "${i.public_ip}:8080"}
+}
+
+output "prometheus_access" {
+  value = {for i in aws_instance.terran_main[*] : i.tags.Name => "${i.public_ip}:9090"}
+}
+
