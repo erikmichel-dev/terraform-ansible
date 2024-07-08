@@ -36,7 +36,7 @@ resource "aws_instance" "terran_main" {
   }
 
   provisioner "local-exec" {
-    command = "printf '\n${self.public_ip}' >>  && aws ec2 wait instance-status-ok --instance-ids ${self.id} --region eu-central-1"
+    command = "printf '\n${self.public_ip}' >> aws_hosts && aws ec2 wait instance-status-ok --instance-ids ${self.id} --region eu-central-1"
   }
 
   provisioner "local-exec" {
