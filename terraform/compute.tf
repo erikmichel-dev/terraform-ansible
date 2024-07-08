@@ -48,7 +48,7 @@ resource "aws_instance" "terran_main" {
 resource "null_resource" "grafana_install" {
     depends_on = [aws_instance.terran_main]
     provisioner "local-exec" {
-      command = "ansible-playbook -i aws_hosts --key-file /home/erik/.ssh/terrankey -u ubuntu playbooks/main-playbook.yml"
+      command = "ansible-playbook -i aws_hosts --key-file ${var.private_key_path} -u ubuntu playbooks/main-playbook.yml"
     }
 }
 
